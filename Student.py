@@ -202,7 +202,7 @@ def main():
         if st.button("Reset Attendance"):
             if password == "Dec061204P@ssword":
                 reset_table(file_name)
-                st.success("Attendance has been reset.")
+                st.success("Attendance has been reset, Refresh page now.")
             else:
                 st.error("Incorrect password.")
 
