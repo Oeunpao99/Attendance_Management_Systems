@@ -156,9 +156,9 @@ def main():
 
     # Set page configuration and title
     st.set_page_config(layout="wide")
-    st.markdown("<h1 style='font-size:30px;'>Department of Applied Mathematics and Statistics</h1>",
+    st.markdown("<h1 style='font-size:35px;'>Department of Applied Mathematics and Statistics</h1>",
                 unsafe_allow_html=True)
-    st.markdown("<h1 style='font-size:25px;'>Student Attendance System</h1>",
+    st.markdown("<h1 style='font-size:30px;'>Student Attendance System</h1>",
                 unsafe_allow_html=True)
 
     # # Sidebar for Reset Attendance and Select Your Name
