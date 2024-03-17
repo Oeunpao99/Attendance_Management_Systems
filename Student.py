@@ -4,7 +4,7 @@ import pandas as pd
 
 # Student information
 student_info = """
-1,e20211125,AN HENGHENG,M
+1,e20211125,ANN HENGHENG,M
 2,e20210200,BAN BUNRONG,M
 3,e20210271,BO SANE,F
 4,e20210320,BUN RATNATEPY,F
@@ -108,11 +108,13 @@ student_info = """
 102,e20211478,VORN SEAVMEY,F
 103,e20210138,YIN SAMBAT,M
 """
+
 # Parse the provided student information into a DataFrame
 student_data = [line.split(",") for line in student_info.strip().split("\n")]
 df_students = pd.DataFrame(student_data, columns=[
                            "Index", "ID", "Name", "Gender"])
 df_students.index = df_students.index + 1  # Adjust index to start from 1
+
 # Initialize all students as absent
 df_students["Attendance Status"] = "Absence"
 
@@ -132,6 +134,7 @@ def load_df_from_csv(file_name):
     else:
         # If the file doesn't exist, initialize the DataFrame with default data
         return pd.DataFrame(student_data, columns=["Index", "ID", "Name", "Gender"])
+
 # Define a function to reset the attendance status
 
 
@@ -139,22 +142,58 @@ def reset_table(file_name):
     df = load_df_from_csv(file_name)
     df["Attendance Status"] = "Absence"
     save_df_to_csv(df, file_name)
+
 # Main function for the Streamlit app
 
 
 def main():
     # Set the file name where the DataFrame is saved
     file_name = 'student_attendance.csv'
+
     # Load student DataFrame from CSV file
     df_students = load_df_from_csv(file_name)
     df_students.index = df_students.index + 1
+
     # Set page configuration and title
     st.set_page_config(layout="wide")
-    st.markdown("<h1 style='font-size:30px;'>Department of Applied Mathematics and Statistics</h1>",
+    st.markdown("<h1 style='font-size:30px;'>Department of Applied Mathematics and Statistics</h2>",
                 unsafe_allow_html=True)
-    st.markdown("<h1 style='font-size:25px;'>Student Attendance System</h1>",
+    st.markdown("<h2 style='font-size:25px;'>Student Attendance System</h2>",
                 unsafe_allow_html=True)
 
+    # # Sidebar for Reset Attendance and Select Your Name
+    # with st.sidebar:
+    #     st.subheader("Reset Attendance")
+    #     password = st.text_input(
+    #         "Enter the password to reset attendance:", type="password")
+    #     if st.button("Reset Attendance"):
+    #         if password == "Dec061204P@ssword":
+    #             reset_table(file_name)
+    #             st.success("Attendance has been reset.")
+    #         else:
+    #             st.error("Incorrect password.")
+
+    st.subheader("Select Your Name")
+    name_query = st.text_input("Search your name here:")
+    filtered_names = df_students[df_students["Name"].str.contains(
+        name_query, case=False)]["Name"]
+    selected_name = st.selectbox(
+        "Or Select your name here:", options=filtered_names)
+    if selected_name:
+        student_id = df_students[df_students["Name"]
+                                 == selected_name]["ID"].iloc[0]
+        st.text_input("Student ID:", value=student_id, disabled=False)
+
+        if st.button("Submit Attendance"):
+            if selected_name:
+                df_students.loc[df_students["Name"] ==
+                                selected_name, "Attendance Status"] = "Present"
+                save_df_to_csv(df_students, file_name)
+                st.success(
+                    f"Attendance submitted successfully for {selected_name}.")
+                st.balloons()
+
+    st.markdown("---")
     # Sidebar for Reset Attendance and Select Your Name
     with st.sidebar:
         st.subheader("Reset Attendance")
@@ -167,30 +206,18 @@ def main():
             else:
                 st.error("Incorrect password.")
 
-        st.subheader("Select Your Name")
-        name_query = st.text_input("Search your name here:")
-        filtered_names = df_students[df_students["Name"].str.contains(
-            name_query, case=False)]["Name"]
-        selected_name = st.selectbox(
-            "Or Select your name here:", options=filtered_names)
-        if selected_name:
-            student_id = df_students[df_students["Name"]
-                                     == selected_name]["ID"].iloc[0]
-            st.text_input("Student ID:", value=student_id, disabled=False)
-
-        if st.button("Submit Attendance"):
-            if selected_name:
-                df_students.loc[df_students["Name"] ==
-                                selected_name, "Attendance Status"] = "Present"
-                save_df_to_csv(df_students, file_name)
-                st.success(
-                    f"Attendance submitted successfully for {selected_name}.")
-                st.balloons()
-
-    # Display student list
     st.subheader("Student List")
     st.table(df_students[["Name", "ID", "Attendance Status"]].style.applymap(
-        lambda x: 'color: red' if x.strip() == 'Absence' else 'color: blue'))
+        lambda x: 'color: red' if x.strip() == 'Absence' else 'color: green').set_table_styles([
+            {
+                'selector': 'th',
+                'props': [
+                    ('font-weight', 'bold'),
+                    ('text-align', 'center'),
+                    ('color', 'grey')
+                ]
+            }
+        ]))
 
     # Add credit information
     st.markdown("---")
