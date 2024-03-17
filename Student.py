@@ -173,7 +173,7 @@ def main():
     #         else:
     #             st.error("Incorrect password.")
 
-    st.subheader("Select Your Name")
+    st.subheader("Please choose any methods to fill your name:")
     name_query = st.text_input("Search your name here:")
     filtered_names = df_students[df_students["Name"].str.contains(
         name_query, case=False)]["Name"]
