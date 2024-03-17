@@ -158,7 +158,7 @@ def main():
     st.set_page_config(layout="wide")
     st.markdown("<h1 style='font-size:30px;'>Department of Applied Mathematics and Statistics</h2>",
                 unsafe_allow_html=True)
-    st.markdown("<h2 style='font-size:25px;'>Student Attendance System</h2>",
+    st.markdown("<h1 style='font-size:25px;'>Student Attendance System</h1>",
                 unsafe_allow_html=True)
 
     # # Sidebar for Reset Attendance and Select Your Name
